@@ -4,6 +4,9 @@
 {% block title %}Home{%endblock%}
 {% block body_block %}
 		<h1>Rango</h1>
+		{% if user.is_authenticated %}
+		<strong>Hey {{user.get_username}}!</strong>
+		{% endif %}
 		{% if categories %}
 		<ul>
 			{% for cat in categories %}

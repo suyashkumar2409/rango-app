@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 	url(r'^add_category/$',views.add_category,name='add_category'),
 	url(r'^$',views.index,name='restricted'),
 	url(r'^$',views.index,name='logout'),
-	url(r'^$',views.index,name='register'),
-	url(r'^$',views.index,name='login'),
+	url(r'^register/$',views.register,name='register'),
+	url(r'^login/$',views.user_login,name='login'),
 
 	)
