@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
-from django.contrib.auth import login,authenticate
+from django.contrib.auth import login,authenticate,logout
+from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from rango.models import Category,Page
 from rango.forms import CategoryForm,PageForm,UserForm,UserProfileForm
 import os
@@ -15,7 +17,36 @@ def index(request):
 
 	context = {'user':request.user, 'categories':category_list,'pages':pages_list,'numpage':len(pages_list)}
 
-	return render(request,'index.html',context)
+
+####### SETTING UP COUNTER USING COOKIES
+	visits = int(request.session.get('visits','1'))
+	if not visits:
+		visits = 1
+
+	context['visits'] = visits
+	reset_last_visit = False
+
+	last_visit = request.session.get('last_visit')
+
+	if last_visit:
+
+		last_visit_time = datetime.strptime(last_visit[:-7],"%Y-%m-%d %H:%M:%S")
+		if (datetime.now()-last_visit_time).days>0:
+			visits = visits+1
+			reset_last_visit = True
+
+	else:
+		reset_last_visit = True
+
+	response = render(request,'index.html',context)
+
+
+	if reset_last_visit is True:
+		request.session['last_visit'] = str(datetime.now())
+		request.session['visits'] = str(visits)
+	#request.session['visits'] = str(1)
+
+	return response
 
 def about(request):
 	context = {'text':"Hey!! THIS IS THE ABOUT PAGE YO!"}
@@ -23,6 +54,7 @@ def about(request):
 
 
 def register(request):
+
 	registered = False
 
 	if request.method == 'POST':
@@ -83,6 +115,13 @@ def user_login(request):
 
 		return render(request,'login.html',{})
 
+@login_required
+def user_logout(request):
+	logout(request)
+
+	return HttpResponseRedirect('/rango/')
+
+@login_required
 def category(request,category_name_slug):
 	context={'category_name':category_name_slug}
 	try:
@@ -102,6 +141,7 @@ def category(request,category_name_slug):
 
 	return render(request,'category.html',context)
 
+@login_required
 def add_category(request):
 	if request.method == "POST":
 		form = CategoryForm(request.POST)
@@ -120,6 +160,7 @@ def add_category(request):
 
 		return render(request,'add_category.html',{'form':form})
 
+@login_required
 def add_page(request,category_name_slug):
 	try:
 		cat = Category.objects.get(slug = category_name_slug)
