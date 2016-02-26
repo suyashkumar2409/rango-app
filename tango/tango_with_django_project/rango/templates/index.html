@@ -3,33 +3,56 @@
 
 {% block title %}Home{%endblock%}
 {% block body_block %}
-		<h1>Rango</h1>
+		<div class="page-header">
+			<h1>Rango</h1>
+		</div>
+
 		{% if user.is_authenticated %}
 		<strong>Hey {{user.get_username}}!</strong>
 		{% endif %}
-		{% if categories %}
-		<ul>
-			{% for cat in categories %}
-				<li><a href="{% url 'category' cat.slug %}">{{cat.name}}</a></li>
-			{% endfor %}
-		</ul>
-		{% else %}
-		<strong>There are no categories present!</strong>
-		{% endif %}
 
-		{% if pages %}
-		<strong>Top {{numpage}} pages!!</strong>
-		<ul>
-			{% for page in pages %}
-				<li><a href="{{page.url}}">{{page.title}}</a></li>
-			{% endfor %}
-		</ul>
+		<div class="row placholders">
+			<div class="col-xs-12 col-sm-6 placeholder">
 
-		{% else %}
-			<strong>There are no pages present!</strong>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4>Categories</h4>				
+					</div>
+				</div>
+				{% if categories %}
+				<ul class="list-group">
+					{% for cat in categories %}
+						<li class="list-group-item"><a href="{% url 'category' cat.slug %}">{{cat.name}}</a></li>
+					{% endfor %}
+				</ul>
+				{% else %}
+				<strong>There are no categories present!</strong>
+				{% endif %}
+			</div>
 
-		{% endif %}
+			<div class="col-xs-12 col-sm-6 placholders">
 
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4>Pages</h4>				
+					</div>
+				</div>
+				{% if pages %}
+				<ul class="list-group">
+					{% for page in pages %}
+						<li class="list-group-item"><a href="{{page.url}}">{{page.title}}</a></li>
+					{% endfor %}
+				</ul>
+
+				{% else %}
+					<strong>There are no pages present!</strong>
+
+				{% endif %}
+			</div>
+		</div>
+
+
+		
 		<br />
 		<strong>Views : {{visits}}</strong>
 {% endblock %}
