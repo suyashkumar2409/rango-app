@@ -52,7 +52,7 @@ def about(request):
 	context = {'text':"Hey!! THIS IS THE ABOUT PAGE YO!"}
 	return render(request,'about.html',context)
 
-
+"""
 def register(request):
 
 	registered = False
@@ -120,7 +120,7 @@ def user_logout(request):
 	logout(request)
 
 	return HttpResponseRedirect('/rango/')
-
+"""
 @login_required
 def category(request,category_name_slug):
 	context={'category_name':category_name_slug}
