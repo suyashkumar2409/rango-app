@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block body_block %}
+
+<h1>Add to your Profile</h1>
+
+<form method = "post" action="{% url 'register_profile' %}">
+	{% csrf_token %}
+	{{userprof_form.as_p}}
+
+	<input type="submit" name="submit" value="Update">
+</form> 
+
+<h4>If you want, you can skip this for now. <a href="/rango/">Home</a></h4>
+
+{% endblock %}

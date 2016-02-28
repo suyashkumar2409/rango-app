@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body_block %}
+<h1>{{username}}</h1>
+
+<p>Email Address: {{email}}</p>
+<p>Personal Website: {{website}}</p>
+{% if not website %}
+	<p>You haven't uploaded website, add it <a href = "{% url 'register_profile' %}">here</a></p>
+{% endif %}
+{% endblock %}

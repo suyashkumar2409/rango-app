@@ -3,8 +3,9 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from rango.models import Category,Page
+from rango.models import Category,Page,UserProfile
 from rango.forms import CategoryForm,PageForm,UserForm,UserProfileForm
+from django.contrib.auth.models import User
 import os
 # Create your views here.
 
@@ -195,4 +196,46 @@ def track_url(request,page_id):
 
 		return HttpResponseRedirect(page.url)
 	except:
+		return HttpResponseRedirect('/rango/')
+
+@login_required
+def register_profile(request):
+	if request.method == "POST":
+		user = request.user
+		userprof_form = UserProfileForm(data = request.POST)
+
+		if userprof_form.is_valid:
+			userprof = userprof_form.save(commit = False)
+
+			userprof.user = user
+
+			userprof.save()
+
+			return HttpResponseRedirect('/rango/')
+		else:
+			return HttpResponseRedirect('/rango/add_profile')
+
+	else:
+		userprof_form = UserProfileForm()
+		return render(request,'profile_registration.html',{'userprof_form':userprof_form})
+
+@login_required
+def profile(request,username):
+	user = User.objects.filter(username = username)[0]
+
+	if user:
+		email = user.email
+		website = None
+		message = None
+		### i DID SOME JUGAAD HERE
+		userprofile = UserProfile.objects.filter(user = user)
+
+		if userprofile:
+			userprofile = UserProfile.objects.filter(user = user)[0]
+			website = userprofile.website
+
+		context = {'username':username,'email':email,'website':website}
+		return render(request,'profile.html',context)
+
+	else:
 		return HttpResponseRedirect('/rango/')
