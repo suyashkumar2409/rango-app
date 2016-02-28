@@ -186,3 +186,13 @@ def add_page(request,category_name_slug):
 
 	return render(request,'add_page.html',{'form':form,'category':cat,'category_name_slug':category_name_slug})
 
+@login_required
+def track_url(request,page_id):
+	try:
+		page = Page.objects.get(id = page_id)
+		page.views = page.views+1
+		page.save()
+
+		return HttpResponseRedirect(page.url)
+	except:
+		return HttpResponseRedirect('/rango/')
